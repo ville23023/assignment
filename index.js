@@ -3,7 +3,7 @@ const path = require('path');
 
 const fs = require('fs');
 const playersData = fs.readFileSync('./players.json', 'utf-8');
-const players = JSON.parse(playersData);
+let players = JSON.parse(playersData);
 
 const app = express();
 
@@ -46,7 +46,7 @@ app.delete('/api/players/:id', (req,res) =>{
         players = players.filter(player => player.id != idToRemove)
         res.status(200).json(
             {
-                msg: `Player with ${idToRemove} removed from the list`
+                msg: `Player with id:${idToRemove} removed from the list`
             }
         )
     }else{
@@ -78,6 +78,39 @@ app.post('/api/players', (req,res) =>{
     );
 });
 
+//Update
+app.patch('/api/players/:id', (req,res) =>{
+    const idToUpdate = Number(req.params.id);
+    const newName = req.body.name;
+    const newPosition = req.body.position;
+    const newGoals = req.body.goals;
+    const newIsCaptain = req.body.isCaptain;
+
+    const player = players.find(player => player.id === idToUpdate);
+
+    if(player){
+        players.forEach(player =>{
+            if(player.id === idToUpdate){
+                player.name = newName;
+                player.position = newPosition;
+                player.goals = newGoals;
+                player.isCaptain = newIsCaptain;
+            }
+        });
+        res.status(200).json(player);
+    }else{
+        res.status(404).json(
+            {
+                msg:"Could not update"
+            }
+        )
+    }
+});
+
+
+app.use((req,res,next) =>{
+    res.status(404).send("Sorry, could not find the content");
+});
 
 
 const PORT = process.env.PORT || 3000;
