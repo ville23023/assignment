@@ -1,1 +1,11 @@
-<h1>Pistepörssi</h1>
+<h1>Players</h1>
+<!-- loop players -->
+{{#each players}}
+ <p>
+    {{this.name}}
+    {{this.position}}
+    {{#if this.isCaptain}}
+        C
+    {{/if}}
+ </p>
+{{/each}}

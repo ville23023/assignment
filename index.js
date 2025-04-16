@@ -10,18 +10,26 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-
+//Handlebars
 app.engine('handlebars', exphbs.engine({
     defaultLayout: 'main',
-    partialsDir:'/views/partials'
+    partialsDir:'views/partials'
 }));
 
 app.get('/', (req,res)=>{
-    res.render('index');
+    res.render('index',
+        {
+            title: 'Node.js assigment',
+            players: players
+        });
 });
 
 app.set('view engine', 'handlebars');
 
+//css
+app.use(express.static('public'));
+
+//REST API
 //Get all
 app.get('/api/players', (req,res) =>{
     res.status(200).json(
@@ -122,7 +130,6 @@ app.patch('/api/players/:id', (req,res) =>{
 app.use((req,res,next) =>{
     res.status(404).send("Sorry, could not find the content");
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
