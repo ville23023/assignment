@@ -1,5 +1,5 @@
 const express = require('express');
-const path = require('path');
+const exphbs = require('express-handlebars');
 
 const fs = require('fs');
 const playersData = fs.readFileSync('./players.json', 'utf-8');
@@ -10,6 +10,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+
+app.engine('handlebars', exphbs.engine({
+    defaultLayout: 'main',
+    partialsDir:'/views/partials'
+}));
+
+app.get('/', (req,res)=>{
+    res.render('index');
+});
+
+app.set('view engine', 'handlebars');
 
 //Get all
 app.get('/api/players', (req,res) =>{
